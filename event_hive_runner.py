@@ -5,11 +5,17 @@ from enum import Enum
 
 
 class EventType(Enum):
+    """
+    Enum class for event types
+    """
     VISION_DETECT = 1
     MOVEMENT = 2
 
 
 class Event(ABC):
+    """
+    Abstract class for events, allows creation of events by using this as a superclass
+    """
     def __init__(self, event_type, content, priority):
         self.event_type = event_type
         self.content = content
@@ -21,6 +27,9 @@ class Event(ABC):
 
 
 class VisionDetectEvent(Event):
+    """
+    Class for vision detect events (example)
+    """
     def __init__(self, content, priority):
         super().__init__(EventType.VISION_DETECT, content, priority)
 
@@ -29,6 +38,9 @@ class VisionDetectEvent(Event):
 
 
 class MovementEvent(Event):
+    """
+    Class for movement events (example)
+    """
     def __init__(self, content, priority):
         super().__init__(EventType.MOVEMENT, content, priority)
 
@@ -44,11 +56,21 @@ class EventQueue:
         self.tiebreaker = 0
 
     def queue_addition(self, event):
+        """
+        Adds an event to the queue
+        :param event:
+        :return:
+        """
         with self.queue_lock:
             self.priority_queue.put((event.priority, self.tiebreaker, event))
             self.tiebreaker += 1
 
     def get_latest_event(self, event_types):
+        """
+        Gets the latest event from the queue
+        :param event_types:
+        :return:
+        """
         with self.queue_lock:
             try:
                 priority, timestamp, event = self.priority_queue.get_nowait()

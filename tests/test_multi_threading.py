@@ -15,6 +15,10 @@ class TestMultithreadAccess(unittest.TestCase):
         self.producer2 = Producer(self.event_queue)
 
     def test_multithread_access(self):
+        """
+        Test that the event queue can be accessed by multiple threads
+        :return:
+        """
         # Start the threads
         self.producer.start()
         self.consumer.start()
@@ -30,6 +34,10 @@ class TestMultithreadAccess(unittest.TestCase):
         self.assertTrue(self.event_queue.priority_queue.empty())
 
     def test_multithread_access_2(self):
+        """
+        Test that the event queue can be accessed by multiple threads
+        :return:
+        """
         # Start the threads
         self.producer1.start()
         self.producer2.start()
@@ -48,22 +56,36 @@ class TestMultithreadAccess(unittest.TestCase):
 
 
 class Producer(threading.Thread):
+    """
+    Producer thread that adds events to the event queue
+    """
     def __init__(self, event_queue):
         threading.Thread.__init__(self)
         self.event_queue = event_queue
 
     def run(self):
+        """
+        Add 10 events to the event queue
+        :return:
+        """
         for i in range(10):
             event = VisionDetectEvent("TEST_CONTENT", i)
             self.event_queue.queue_addition(event)
 
 
 class Consumer(threading.Thread):
+    """
+    Consumer thread that consumes events from the event queue
+    """
     def __init__(self, event_queue):
         threading.Thread.__init__(self)
         self.event_queue = event_queue
 
     def run(self):
+        """
+        Consume all events from the event queue
+        :return:
+        """
         while True:
             event = self.event_queue.get_latest_event([VisionDetectEvent])
             if event is None:
