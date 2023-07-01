@@ -1,6 +1,7 @@
 import threading
 import time
 import unittest
+
 from event_hive_runner import EventQueue, VisionDetectEvent
 
 

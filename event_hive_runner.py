@@ -1,7 +1,7 @@
-import threading
 import queue
-from enum import Enum
+import threading
 from abc import ABC, abstractmethod
+from enum import Enum
 
 
 class EventType(Enum):
