@@ -10,6 +10,9 @@ class TestMultithreadAccess(unittest.TestCase):
         self.producer = Producer(self.event_queue)
         self.consumer = Consumer(self.event_queue)
 
+        self.producer1 = Producer(self.event_queue)
+        self.producer2 = Producer(self.event_queue)
+
     def test_multithread_access(self):
         # Start the threads
         self.producer.start()
@@ -17,6 +20,23 @@ class TestMultithreadAccess(unittest.TestCase):
 
         # Wait for them to finish
         self.producer.join()
+        self.consumer.join()
+
+        # Allow some time for consumer to process all events
+        time.sleep(1)
+
+        # Check that all events have been consumed
+        self.assertTrue(self.event_queue.priority_queue.empty())
+
+    def test_multithread_access_2(self):
+        # Start the threads
+        self.producer1.start()
+        self.producer2.start()
+        self.consumer.start()
+
+        # Wait for them to finish
+        self.producer1.join()
+        self.producer2.join()
         self.consumer.join()
 
         # Allow some time for consumer to process all events
