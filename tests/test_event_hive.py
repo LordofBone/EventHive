@@ -83,10 +83,12 @@ class TestEventQueue(unittest.TestCase):
         Test that events are ordered correctly
         :return:
         """
+
         class CustomEvent(Event):
             """
             Custom event for testing
             """
+
             def __init__(self, content, priority):
                 super().__init__("CUSTOM", content, priority)
 

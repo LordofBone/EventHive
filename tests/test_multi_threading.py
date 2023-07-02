@@ -59,6 +59,7 @@ class Producer(threading.Thread):
     """
     Producer thread that adds events to the event queue
     """
+
     def __init__(self, event_queue):
         threading.Thread.__init__(self)
         self.event_queue = event_queue
@@ -77,6 +78,7 @@ class Consumer(threading.Thread):
     """
     Consumer thread that consumes events from the event queue
     """
+
     def __init__(self, event_queue):
         threading.Thread.__init__(self)
         self.event_queue = event_queue
