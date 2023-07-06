@@ -1,22 +1,23 @@
-import threading
+import logging
 import time
 
-from custom_events import TestEvent
+from custom_events import TestEvent, OtherTestEvent
+from event_hive_runner import EventActor
 
 
-class Consumer(threading.Thread):
+class Consumer(EventActor):
     def __init__(self, event_queue):
-        threading.Thread.__init__(self)
-        self.event_queue = event_queue
+        super().__init__(event_queue)
 
     def run(self):
         while True:
-            event_data = self.event_queue.get_latest_event([TestEvent])
+            logging.debug(f"{self.__class__.__name__} Consuming...")
+            event_data = self.event_queue.get_latest_event([TestEvent, OtherTestEvent])
             if event_data is not None:  # check if event data is not None
                 _, event = event_data
                 if event.content == ["STOP"]:
                     break
                 else:
-                    print(f"{__class__} Consumed: ", event.content)
+                    logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
             time.sleep(1)  # simulate some delay
-        print(f"{__class__} Consumer thread finished")
+        logging.info(f"{self.__class__.__name__} Consumer thread finished")
