@@ -1,8 +1,8 @@
-import threading
 import time
 import unittest
 
 from event_hive_runner import EventQueue, VisionDetectEvent
+from root_classes import EventActor
 
 
 class TestMultithreadAccess(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestMultithreadAccess(unittest.TestCase):
         time.sleep(1)
 
         # Check that all events have been consumed
-        self.assertTrue(self.event_queue.priority_queue.empty())
+        self.assertEqual(len(self.event_queue.priority_queue), 0)
 
     def test_multithread_access_2(self):
         """
@@ -52,17 +52,16 @@ class TestMultithreadAccess(unittest.TestCase):
         time.sleep(1)
 
         # Check that all events have been consumed
-        self.assertTrue(self.event_queue.priority_queue.empty())
+        self.assertEqual(len(self.event_queue.priority_queue), 0)
 
 
-class Producer(threading.Thread):
+class Producer(EventActor):
     """
     Producer thread that adds events to the event queue
     """
 
     def __init__(self, event_queue):
-        threading.Thread.__init__(self)
-        self.event_queue = event_queue
+        super().__init__(event_queue)
 
     def run(self):
         """
@@ -74,14 +73,13 @@ class Producer(threading.Thread):
             self.event_queue.queue_addition(event)
 
 
-class Consumer(threading.Thread):
+class Consumer(EventActor):
     """
     Consumer thread that consumes events from the event queue
     """
 
     def __init__(self, event_queue):
-        threading.Thread.__init__(self)
-        self.event_queue = event_queue
+        super().__init__(event_queue)
 
     def run(self):
         """
