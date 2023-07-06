@@ -1,3 +1,4 @@
+import heapq
 import queue
 import threading
 from abc import ABC, abstractmethod
@@ -16,6 +17,7 @@ class Event(ABC):
     """
     Abstract class for events, allows creation of events by using this as a superclass
     """
+
     def __init__(self, event_type, content, priority):
         self.event_type = event_type
         self.content = content
@@ -30,6 +32,7 @@ class VisionDetectEvent(Event):
     """
     Class for vision detect events (example)
     """
+
     def __init__(self, content, priority):
         super().__init__(EventType.VISION_DETECT, content, priority)
 
@@ -41,6 +44,7 @@ class MovementEvent(Event):
     """
     Class for movement events (example)
     """
+
     def __init__(self, content, priority):
         super().__init__(EventType.MOVEMENT, content, priority)
 
@@ -51,34 +55,36 @@ class MovementEvent(Event):
 class EventQueue:
     def __init__(self):
         self.queue_lock = threading.Lock()
-        self.priority_queue = queue.PriorityQueue()
+        # self.priority_queue = queue.PriorityQueue()
+        self.priority_queue = list()  # ensure priority_queue is a list
         self.temp_queue = queue.PriorityQueue()
         self.tiebreaker = 0
 
     def queue_addition(self, event):
-        """
-        Adds an event to the queue
-        :param event:
-        :return:
-        """
         with self.queue_lock:
-            self.priority_queue.put((event.priority, self.tiebreaker, event))
+            heapq.heappush(self.priority_queue, (event.priority, self.tiebreaker, event))
             self.tiebreaker += 1
 
     def get_latest_event(self, event_types):
-        """
-        Gets the latest event from the queue
-        :param event_types:
-        :return:
-        """
         with self.queue_lock:
-            try:
-                priority, timestamp, event = self.priority_queue.get_nowait()
-                while not isinstance(event, tuple(event_types)):
-                    self.temp_queue.put((priority, timestamp, event))
-                    priority, timestamp, event = self.priority_queue.get_nowait()
-                while not self.temp_queue.empty():
-                    self.priority_queue.put(self.temp_queue.get())
-                return priority, event
-            except queue.Empty:
+            if not self.priority_queue:
                 return None
+            priority, timestamp, event = self.priority_queue[0]  # peek at the first item
+            while not isinstance(event, tuple(event_types)):
+                if len(self.priority_queue) == 1:
+                    # we have reached the end of the queue, so we return None
+                    return None
+                _, _, event = self.priority_queue[1]  # peek at the next item
+                heapq.heapreplace(self.priority_queue, self.priority_queue[1])  # pop and push in one operation
+            # the event at the head of the queue is of the desired type, so we pop it
+            heapq.heappop(self.priority_queue)
+            return priority, event
+
+
+class EventActor(threading.Thread):
+    def __init__(self, event_queue: EventQueue):
+        super().__init__()
+        self.event_queue = event_queue
+
+    def run(self):
+        raise NotImplementedError("You need to override the run method.")
