@@ -1,8 +1,7 @@
 import time
 import unittest
 
-from event_hive_runner import EventQueue, VisionDetectEvent
-from root_classes import EventActor
+from event_hive_runner import EventQueue, VisionDetectEvent, EventActor
 
 
 class TestMultithreadAccess(unittest.TestCase):
