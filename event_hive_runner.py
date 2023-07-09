@@ -7,7 +7,7 @@ from enum import Enum
 
 class EventType(Enum):
     """
-    Enum class for event types
+    Enum class for event types (examples included)
     """
     VISION_DETECT = 1
     MOVEMENT = 2
@@ -55,7 +55,6 @@ class MovementEvent(Event):
 class EventQueue:
     def __init__(self):
         self.queue_lock = threading.Lock()
-        # self.priority_queue = queue.PriorityQueue()
         self.priority_queue = list()  # ensure priority_queue is a list
         self.temp_queue = queue.PriorityQueue()
         self.tiebreaker = 0
