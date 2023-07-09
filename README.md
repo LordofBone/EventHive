@@ -106,5 +106,15 @@ consumerproducer.start()
 ## Testing
 Unit tests are provided in tests and can be run using a test runner like pytest.
 
+Each test can be run individually, for example:
+
+```python tests/test_event_hive.py```
+```python tests/test_multi_threading.py```
+```python tests/test_integration.py```
+
+or the entire test suite can be run:
+
+```python test_suite.py```
+
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
