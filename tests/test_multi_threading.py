@@ -95,3 +95,7 @@ class Consumer(EventActor):
                 break
             else:
                 _, event = event
+
+
+if __name__ == '__main__':
+    unittest.main()
