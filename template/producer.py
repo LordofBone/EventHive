@@ -1,7 +1,7 @@
 import logging
 import time
 
-from custom_events import TestEvent, OtherTestEvent, PingTestEvent
+from template.custom_events import TestEvent, OtherTestEvent, PingTestEvent
 from event_hive_runner import EventActor
 
 
