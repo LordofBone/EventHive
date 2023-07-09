@@ -1,10 +1,10 @@
 import logging
 import time
 
+from event_hive_runner import EventQueue
 from template.consumer import Consumer
 from template.consumer_producer import ConsumerProducer
 from template.consumer_producer_2 import ConsumerProducer2
-from event_hive_runner import EventQueue
 from template.producer import Producer
 
 
