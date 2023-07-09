@@ -10,23 +10,37 @@ class ListHandler(logging.Handler):
         self.log_list = log_list
 
     def emit(self, record):
+        """
+        Append the log message to the list
+        :param record:
+        :return:
+        """
         self.log_list.append(self.format(record))
 
 
-class TestLogging(unittest.TestCase):
+class TestFullIntegration(unittest.TestCase):
+    """
+    Test that the event queue can be accessed by multiple threads and that all events are processed and that
+    different modules can communicate with each other via the event queue
+    """
+
     def setUp(self):
-        # Initialize list and handler
+        """
+        Set up the test by creating a list to store log messages in and adding a handler to the root logger
+        :return:
+        """
         self.log_list = []
         self.handler = ListHandler(self.log_list)
-
-        # Configure logging level
         logging.basicConfig(level=logging.INFO, handlers=[self.handler])
 
     def tearDown(self):
         logging.getLogger().removeHandler(self.handler)
 
-    def test_event_logging(self):
-        # Run your main function here
+    def test_multi_module_integration(self):
+        """
+        Run the main function and check that all expected log messages appear; meaning that all modules worked
+        through the queues and communicated with each other successfully :return:
+        """
         main()
 
         expected_logs = [

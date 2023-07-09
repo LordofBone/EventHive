@@ -4,6 +4,10 @@ from event_hive_runner import Event, EventQueue, VisionDetectEvent, MovementEven
 
 
 class TestEventQueue(unittest.TestCase):
+    """
+    Test multiple event queues run alongside and do not interfere with each other, and that events are ordered correctly
+    """
+
     def setUp(self):
         self.event_queue = EventQueue()
         self.event_queue_1 = EventQueue()

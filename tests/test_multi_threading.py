@@ -5,6 +5,10 @@ from event_hive_runner import EventQueue, VisionDetectEvent, EventActor
 
 
 class TestMultithreadAccess(unittest.TestCase):
+    """
+    Test that the event queue can be accessed by multiple threads without any issues
+    """
+
     def setUp(self):
         self.event_queue = EventQueue()
         self.producer = Producer(self.event_queue)
