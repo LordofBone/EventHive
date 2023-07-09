@@ -116,5 +116,9 @@ or the entire test suite can be run:
 
 ```python test_suite.py```
 
+Tests can be added and will be automatically picked up by the test runner. They just need to begin with 'test_', for example:
+
+```tests/test_new_event.py```
+
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
