@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from event_hive_runner import EventQueue, VisionDetectEvent, EventActor, consumer_logger
+from event_hive_runner import EventQueue, VisionDetectEvent, EventActor
 
 
 class TestMultithreadAccess(unittest.TestCase):
@@ -100,7 +100,6 @@ class Consumer(EventActor):
     Consumer thread that consumes events from the event queue
     """
 
-    @consumer_logger
     def handle_event(self, event):
         """
         Handle the event
@@ -109,7 +108,6 @@ class Consumer(EventActor):
         """
         return True  # If the queue is not empty, continue the loop
 
-    @consumer_logger
     def exit_event(self, event):
         """
         Handle the exit event, break the loop

@@ -62,17 +62,15 @@ class ReturnTestEvent(Event):
    override the necessary methods, for example:
 
 ```python
-from event_hive_runner import EventActor, consumer_logger
+from event_hive_runner import EventActor
 from template.custom_events import PingTestEvent, ReturnTestEvent
 
 
 class ConsumerProducer(EventActor):
-    @consumer_logger
     def handle_received(self, event):
         self.produce_event(ReturnTestEvent(["FINISHED"], 3))
         return False  # Signal to break the loop
 
-    @consumer_logger
     def handle_ping(self, event):
         self.produce_event(ReturnTestEvent(["RETURN_TEST_CONTENT"], 1))
         return True  # Continue the loop

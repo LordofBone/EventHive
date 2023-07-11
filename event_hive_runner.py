@@ -1,4 +1,3 @@
-import functools
 import heapq
 import logging
 import queue
@@ -86,18 +85,6 @@ class EventQueue:
             return len(self.priority_queue) == 0
 
 
-def consumer_logger(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        self = args[0]  # the first argument is always `self` in an instance method
-        event = args[1]  # the second argument is `event` in your handler method
-        logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
-        return result
-
-    return wrapper
-
-
 class EventActor(ABC, threading.Thread):
     def __init__(self, event_queue: EventQueue):
         super().__init__()
@@ -130,10 +117,10 @@ class EventActor(ABC, threading.Thread):
             event_data = self.event_queue.get_latest_event(self.get_consumable_events())
             if event_data is not None:
                 _, event = event_data
-
                 handler = event_handlers.get(tuple(event.content))
                 if handler:
                     continue_loop = handler(event)
+                    logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
                 else:
                     logging.warning(f"{self.__class__.__name__} Received unknown event: {event}")
         logging.info(f"{self.__class__.__name__} Consumer thread finished")

@@ -1,9 +1,8 @@
-from event_hive_runner import EventActor, consumer_logger
+from event_hive_runner import EventActor
 from template.custom_events import TestEvent, OtherTestEvent
 
 
 class Consumer(EventActor):
-    @consumer_logger
     def handle_stop(self, event):
         """
         This method is called when the event type is "STOP"
@@ -12,7 +11,6 @@ class Consumer(EventActor):
         """
         return False  # Signal to break the loop
 
-    @consumer_logger
     def handle_other(self, event):
         """
         This method is called when the event type is "OTHER_TEST_EVENT"

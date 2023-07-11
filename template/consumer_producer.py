@@ -1,9 +1,8 @@
-from event_hive_runner import EventActor, consumer_logger
+from event_hive_runner import EventActor
 from template.custom_events import PingTestEvent, ReturnTestEvent
 
 
 class ConsumerProducer(EventActor):
-    @consumer_logger
     def handle_received(self, event):
         """
         This method is called when the event type is "RECEIVED"
@@ -13,7 +12,6 @@ class ConsumerProducer(EventActor):
         self.produce_event(ReturnTestEvent(["FINISHED"], 3))
         return False  # Signal to break the loop
 
-    @consumer_logger
     def handle_ping(self, event):
         """
         This method is called when the event type is "PING"
