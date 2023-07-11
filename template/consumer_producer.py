@@ -7,6 +7,7 @@ class ConsumerProducer(EventActor):
     def handle_received(self, event):
         """
         This method is called when the event type is "RECEIVED"
+        :param event:
         :return:
         """
         self.produce_event(ReturnTestEvent(["FINISHED"], 3))
@@ -16,6 +17,7 @@ class ConsumerProducer(EventActor):
     def handle_ping(self, event):
         """
         This method is called when the event type is "PING"
+        :param event:
         :return:
         """
         self.produce_event(ReturnTestEvent(["RETURN_TEST_CONTENT"], 1))

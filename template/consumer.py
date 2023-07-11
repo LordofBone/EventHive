@@ -7,6 +7,7 @@ class Consumer(EventActor):
     def handle_stop(self, event):
         """
         This method is called when the event type is "STOP"
+        :param event:
         :return:
         """
         return False  # Signal to break the loop
@@ -15,6 +16,7 @@ class Consumer(EventActor):
     def handle_other(self, event):
         """
         This method is called when the event type is "OTHER_TEST_EVENT"
+        :param event:
         :return:
         """
         return True  # Continue the loop

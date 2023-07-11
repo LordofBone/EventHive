@@ -102,6 +102,7 @@ class Consumer(EventActor):
     def handle_event(self, event):
         """
         Handle the event
+        :param event:
         :return:
         """
         return True  # If the queue is not empty, continue the loop
@@ -110,6 +111,7 @@ class Consumer(EventActor):
     def exit_event(self, event):
         """
         Handle the exit event, break the loop
+        :param event:
         :return:
         """
         return False
