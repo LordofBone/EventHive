@@ -37,5 +37,7 @@ class Producer(EventActor):
             if event is not None:
                 self.produce_event(event)
             self.loop_count += 1
-            time.sleep(2)  # simulate some delay, seems to be at least 2 seconds or the queue can't keep up
+            # simulate some delay, seems to be at least 2 seconds or the queue can't keep up (some sort of race
+            # condition?) todo: investigate
+            time.sleep(2)
         logging.info(f"{self.__class__.__name__} Producer thread finished")

@@ -3,7 +3,6 @@ import heapq
 import logging
 import queue
 import threading
-import time
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -137,5 +136,4 @@ class EventActor(ABC, threading.Thread):
                     continue_loop = handler(event)
                 else:
                     logging.warning(f"{self.__class__.__name__} Received unknown event: {event}")
-            time.sleep(1)  # simulate some delay
         logging.info(f"{self.__class__.__name__} Consumer thread finished")
