@@ -1,23 +1,37 @@
-import logging
-import time
-
-from event_hive_runner import EventActor
+from event_hive_runner import EventActor, consumer_logger
 from template.custom_events import TestEvent, OtherTestEvent
 
 
 class Consumer(EventActor):
-    def __init__(self, event_queue):
-        super().__init__(event_queue)
+    @consumer_logger
+    def handle_stop(self, event):
+        """
+        This method is called when the event type is "STOP"
+        :return:
+        """
+        return False  # Signal to break the loop
 
-    def run(self):
-        while True:
-            logging.debug(f"{self.__class__.__name__} Consuming...")
-            event_data = self.event_queue.get_latest_event([TestEvent, OtherTestEvent])
-            if event_data is not None:  # check if event data is not None
-                _, event = event_data
-                if event.content == ["STOP"]:
-                    break
-                else:
-                    logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
-            time.sleep(1)  # simulate some delay
-        logging.info(f"{self.__class__.__name__} Consumer thread finished")
+    @consumer_logger
+    def handle_other(self, event):
+        """
+        This method is called when the event type is "OTHER_TEST_EVENT"
+        :return:
+        """
+        return True  # Continue the loop
+
+    def get_event_handlers(self):
+        """
+        This method returns a dictionary of event handlers.
+        :return:
+        """
+        return {
+            ("STOP",): self.handle_stop,
+            ("TEST_CONTENT",): self.handle_other
+        }
+
+    def get_consumable_events(self):
+        """
+        This method returns a list of event types that this consumer can consume.
+        :return:
+        """
+        return [TestEvent, OtherTestEvent]

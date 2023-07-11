@@ -1,6 +1,9 @@
+import functools
 import heapq
+import logging
 import queue
 import threading
+import time
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -79,11 +82,60 @@ class EventQueue:
             heapq.heappop(self.priority_queue)
             return priority, event
 
+    def is_event_queue_empty(self):
+        with self.queue_lock:
+            return len(self.priority_queue) == 0
 
-class EventActor(threading.Thread):
+
+def consumer_logger(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        self = args[0]  # the first argument is always `self` in an instance method
+        event = args[1]  # the second argument is `event` in your handler method
+        logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
+        return result
+
+    return wrapper
+
+
+class EventActor(ABC, threading.Thread):
     def __init__(self, event_queue: EventQueue):
         super().__init__()
         self.event_queue = event_queue
+        self.is_running = True
+
+    @abstractmethod
+    def get_event_handlers(self):
+        """
+        Returns a dictionary mapping the event content to the corresponding event handler.
+        """
+        pass
+
+    @abstractmethod
+    def get_consumable_events(self):
+        """
+        Returns a list of events that this actor can consume.
+        """
+        pass
+
+    def produce_event(self, event):
+        self.event_queue.queue_addition(event)
+        logging.info(f"{self.__class__.__name__} Produced: {event.content}")
 
     def run(self):
-        raise NotImplementedError("You need to override the run method.")
+        event_handlers = self.get_event_handlers()
+        continue_loop = True
+        while continue_loop:
+            logging.debug(f"{self.__class__.__name__} Consuming...")
+            event_data = self.event_queue.get_latest_event(self.get_consumable_events())
+            if event_data is not None:
+                _, event = event_data
+
+                handler = event_handlers.get(tuple(event.content))
+                if handler:
+                    continue_loop = handler(event)
+                else:
+                    logging.warning(f"{self.__class__.__name__} Received unknown event: {event}")
+            time.sleep(1)  # simulate some delay
+        logging.info(f"{self.__class__.__name__} Consumer thread finished")
