@@ -4,6 +4,7 @@ import queue
 import threading
 from abc import ABC, abstractmethod
 from enum import Enum
+from time import sleep
 
 
 class EventType(Enum):
@@ -86,10 +87,11 @@ class EventQueue:
 
 
 class EventActor(ABC, threading.Thread):
-    def __init__(self, event_queue: EventQueue):
+    def __init__(self, event_queue: EventQueue, sleep_time=0):
         super().__init__()
         self.event_queue = event_queue
         self.is_running = True
+        self.sleep_time = sleep_time
 
     @abstractmethod
     def get_event_handlers(self):
@@ -123,4 +125,5 @@ class EventActor(ABC, threading.Thread):
                     logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
                 else:
                     logging.warning(f"{self.__class__.__name__} Received unknown event: {event}")
+            sleep(self.sleep_time)
         logging.info(f"{self.__class__.__name__} Consumer thread finished")
