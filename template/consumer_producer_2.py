@@ -6,7 +6,8 @@ class ConsumerProducer2(EventActor):
     def handle_finished(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "FINISHED"
-        :param event:
+        :param event_data:
+        :param event_type:
         :return:
         """
         return False  # Signal to break the loop
@@ -14,7 +15,8 @@ class ConsumerProducer2(EventActor):
     def handle_return_test_content(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "RETURN_TEST_CONTENT"
-        :param event:
+        :param event_data:
+        :param event_type:
         :return:
         """
         self.produce_event(PingTestEvent(["RECEIVED"], 1))
