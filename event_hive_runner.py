@@ -4,7 +4,6 @@ import queue
 import threading
 from abc import ABC, abstractmethod
 from enum import Enum
-from time import sleep
 
 
 class EventType(Enum):
@@ -119,11 +118,10 @@ class EventActor(ABC, threading.Thread):
             event_data = self.event_queue.get_latest_event(self.get_consumable_events())
             if event_data is not None:
                 _, event = event_data
-                handler = event_handlers.get(tuple(event.content))
+                handler = event_handlers.get(event.content[0])
                 if handler:
-                    continue_loop = handler(event)
+                    continue_loop = handler(*event.content)
                     logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
                 else:
                     logging.warning(f"{self.__class__.__name__} Received unknown event: {event}")
-            sleep(self.sleep_time)
         logging.info(f"{self.__class__.__name__} Consumer thread finished")

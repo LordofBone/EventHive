@@ -26,8 +26,8 @@ class ConsumerProducer2(EventActor):
         :return:
         """
         return {
-            ("FINISHED",): self.handle_finished,
-            ("RETURN_TEST_CONTENT",): self.handle_return_test_content,
+            "FINISHED": self.handle_finished,
+            "RETURN_TEST_CONTENT": self.handle_return_test_content,
         }
 
     def get_consumable_events(self):

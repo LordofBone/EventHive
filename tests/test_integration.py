@@ -48,6 +48,8 @@ class TestFullIntegration(unittest.TestCase):
             "INFO:root:Consumer Consumed: ['TEST_CONTENT']",
             "INFO:root:Producer Produced: ['PING']",
             "INFO:root:ConsumerProducer Consumed: ['PING']",
+            "INFO:root:Producer Produced: ['PING', 'FINAL PING']",
+            "INFO:root:ConsumerProducer Consumed: ['PING', 'FINAL PING']",
             "INFO:root:ConsumerProducer Produced: ['RETURN_TEST_CONTENT']",
             "INFO:root:ConsumerProducer2 Consumed: ['RETURN_TEST_CONTENT']",
             "INFO:root:ConsumerProducer2 Produced: ['RECEIVED']",

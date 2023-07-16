@@ -30,6 +30,8 @@ class Producer(EventActor):
                 event = OtherTestEvent(["TEST_CONTENT"], 2)
             elif self.loop_count == 4:
                 event = PingTestEvent(["PING"], 1)
+            elif self.loop_count == 5:
+                event = PingTestEvent(["PING", "FINAL PING"], 1)
             elif self.loop_count == self.max_loop - 1:
                 event = TestEvent(["STOP"], 3)
             else:

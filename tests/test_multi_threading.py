@@ -122,8 +122,8 @@ class Consumer(EventActor):
         :return:
         """
         return {
-            ("TEST_CONTENT",): self.handle_event,
-            ("EXIT",): self.exit_event
+            "TEST_CONTENT": self.handle_event,
+            "EXIT": self.exit_event
         }
 
     def get_consumable_events(self):

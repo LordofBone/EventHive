@@ -12,13 +12,16 @@ class ConsumerProducer(EventActor):
         self.produce_event(ReturnTestEvent(["FINISHED"], 3))
         return False  # Signal to break the loop
 
-    def handle_ping(self, event):
+    def handle_ping(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "PING"
-        :param event:
+        :param event_type:
+        :param event_data:
         :return:
         """
-        self.produce_event(ReturnTestEvent(["RETURN_TEST_CONTENT"], 1))
+        if event_data == "FINAL PING":
+            self.produce_event(ReturnTestEvent(["RETURN_TEST_CONTENT"], 1))
+
         return True  # Continue the loop
 
     def get_event_handlers(self):
@@ -27,8 +30,8 @@ class ConsumerProducer(EventActor):
         :return:
         """
         return {
-            ("RECEIVED",): self.handle_received,
-            ("PING",): self.handle_ping,
+            "RECEIVED": self.handle_received,
+            "PING": self.handle_ping,
         }
 
     def get_consumable_events(self):

@@ -58,8 +58,46 @@ class ReturnTestEvent(Event):
         return self.__class__
 ```
 
-4. Create a custom producer and consumer by subclassing ProducerTemplate and ConsumerTemplate, respectively, and
-   override the necessary methods, for example:
+4. Create a custom producer to kick off events by subclassing EventActor and overriding run, for example:
+
+```python
+import time
+
+from event_hive_runner import EventActor
+from template.custom_events import TestEvent, PingTestEvent
+
+
+class Producer(EventActor):
+    def __init__(self, event_queue):
+        super().__init__(event_queue)
+        self.max_loop = 10
+        self.loop_count = 0
+
+    def get_event_handlers(self):
+        # No event handlers for the Producer since it's not supposed to consume any events.
+        return {}
+
+    def get_consumable_events(self):
+        # No consumable events for the Producer since it's not supposed to consume any events.
+        return []
+
+    def run(self):
+        while self.loop_count < self.max_loop:
+            if self.loop_count == self.max_loop - 1:
+                event = TestEvent(["STOP"], 3)
+            elif self.loop_count == 2:
+                event = PingTestEvent(["PING"], 1)
+            else:
+                event = PingTestEvent(["PING", "THIS IS A PING"], 1)
+            if event is not None:
+                self.produce_event(event)
+            self.loop_count += 1
+            time.sleep(2)
+```
+
+You can also see here that you can also add in extra data into the event content, which can be used by the consumer.
+
+5. Create a custom producer and consumer by subclassing EventActor and override the necessary methods, for example:
 
 ```python
 from event_hive_runner import EventActor
@@ -71,14 +109,18 @@ class ConsumerProducer(EventActor):
         self.produce_event(ReturnTestEvent(["FINISHED"], 3))
         return False  # Signal to break the loop
 
-    def handle_ping(self, event):
+    def handle_ping(self, event_type=None, event_data=None):
+        # can add additional data into the event and use it
+        print(event_type)
+        if event_data == "THIS IS A PING":
+            print("This was a ping with extra data")
         self.produce_event(ReturnTestEvent(["RETURN_TEST_CONTENT"], 1))
         return True  # Continue the loop
 
     def get_event_handlers(self):
         return {
-            ("RECEIVED",): self.handle_received,
-            ("PING",): self.handle_ping,
+            "STOP": self.handle_received,
+            "PING": self.handle_ping,
         }
 
     def get_consumable_events(self):
@@ -89,6 +131,11 @@ You can add your own logic within this method to handle the event data. In this 
 event content is `["RECEIVED"]` or `["PING"]` and produces a `ReturnTestEvent` with the appropriate content, but this of
 course can be changed to do whatever you want.
 
+You can also see how the producer can add in extra data into the event content, which can be used by the consumer;
+so you could add in extra information for the function, such as a generate TTS function requiring text to convert.
+
+Adding in event_type=None, event_data=None, allows an event without additional data to be passed in as well.
+
 Functions can either be producers, consumers or both and can communicate with each other by adding and getting events
 from the event queue.
 
@@ -96,9 +143,11 @@ from the event queue.
 
 ```python
 from consumer_producer import ConsumerProducer
+from producer import Producer
 from event_hive_runner import EventQueue
 
 event_queue = EventQueue()
+producer = Producer(event_queue)
 consumerproducer = ConsumerProducer(event_queue)
 
 consumerproducer.start()
