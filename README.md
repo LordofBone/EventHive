@@ -105,7 +105,7 @@ from template.custom_events import PingTestEvent, ReturnTestEvent
 
 
 class ConsumerProducer(EventActor):
-    def handle_received(self, event):
+    def handle_received(self, event_type=None, event_data=None):
         self.produce_event(ReturnTestEvent(["FINISHED"], 3))
         return False  # Signal to break the loop
 

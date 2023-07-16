@@ -3,7 +3,7 @@ from template.custom_events import PingTestEvent, ReturnTestEvent
 
 
 class ConsumerProducer2(EventActor):
-    def handle_finished(self, event):
+    def handle_finished(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "FINISHED"
         :param event:
@@ -11,7 +11,7 @@ class ConsumerProducer2(EventActor):
         """
         return False  # Signal to break the loop
 
-    def handle_return_test_content(self, event):
+    def handle_return_test_content(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "RETURN_TEST_CONTENT"
         :param event:

@@ -3,7 +3,7 @@ from template.custom_events import PingTestEvent, ReturnTestEvent
 
 
 class ConsumerProducer(EventActor):
-    def handle_received(self, event):
+    def handle_received(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "RECEIVED"
         :param event:

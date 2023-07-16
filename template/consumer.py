@@ -3,7 +3,7 @@ from template.custom_events import TestEvent, OtherTestEvent
 
 
 class Consumer(EventActor):
-    def handle_stop(self, event):
+    def handle_stop(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "STOP"
         :param event:
@@ -11,7 +11,7 @@ class Consumer(EventActor):
         """
         return False  # Signal to break the loop
 
-    def handle_other(self, event):
+    def handle_other(self, event_type=None, event_data=None):
         """
         This method is called when the event type is "OTHER_TEST_EVENT"
         :param event:
