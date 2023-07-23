@@ -23,20 +23,7 @@ get you up and running.
 git clone https://github.com/LordofBone/EventHive
 ```
 
-2. In your projects main code add the EventHive directory to your path:
-
-```python
-import os
-import sys
-
-current_dir = os.path.dirname(os.path.realpath(__file__))
-
-event_hive_dir = os.path.join(current_dir, '..', 'EventHive')
-
-sys.path.append(event_hive_dir)
-```
-
-3. Create a custom event type by subclassing the `Event` class and making, for example, a custom_events.py:
+2. Create a custom event type by subclassing the `Event` class and making, for example, a custom_events.py:
 
 ```python
 from event_hive_runner import Event
@@ -58,7 +45,7 @@ class ReturnTestEvent(Event):
         return self.__class__
 ```
 
-4. Create a custom producer to kick off events by subclassing EventActor and overriding run, for example:
+3. Create a custom producer to kick off events by subclassing EventActor and overriding run, for example:
 
 ```python
 import time
@@ -97,7 +84,7 @@ class Producer(EventActor):
 
 You can also see here that you can also add in extra data into the event content, which can be used by the consumer.
 
-5. Create a custom producer and consumer by subclassing EventActor and override the necessary methods, for example:
+4. Create a custom producer and consumer by subclassing EventActor and override the necessary methods, for example:
 
 ```python
 from event_hive_runner import EventActor
