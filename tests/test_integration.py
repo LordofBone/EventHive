@@ -31,7 +31,7 @@ class TestFullIntegration(unittest.TestCase):
         """
         self.log_list = []
         self.handler = ListHandler(self.log_list)
-        logging.basicConfig(level=logging.INFO, handlers=[self.handler])
+        logging.basicConfig(level=logging.DEBUG, handlers=[self.handler])
 
     def tearDown(self):
         logging.getLogger().removeHandler(self.handler)
@@ -44,22 +44,22 @@ class TestFullIntegration(unittest.TestCase):
         main()
 
         expected_logs = [
-            "INFO:root:Producer Produced: ['TEST_CONTENT']",
-            "INFO:root:Consumer Consumed: ['TEST_CONTENT']",
-            "INFO:root:Producer Produced: ['PING']",
-            "INFO:root:ConsumerProducer Consumed: ['PING']",
-            "INFO:root:Producer Produced: ['PING', 'FINAL PING']",
-            "INFO:root:ConsumerProducer Consumed: ['PING', 'FINAL PING']",
-            "INFO:root:ConsumerProducer Produced: ['RETURN_TEST_CONTENT']",
-            "INFO:root:ConsumerProducer2 Consumed: ['RETURN_TEST_CONTENT']",
-            "INFO:root:ConsumerProducer2 Produced: ['RECEIVED']",
-            "INFO:root:ConsumerProducer Consumed: ['RECEIVED']",
-            "INFO:root:ConsumerProducer Produced: ['FINISHED']",
-            "INFO:root:ConsumerProducer Consumer thread finished",
-            "INFO:root:ConsumerProducer2 Consumed: ['FINISHED']",
-            "INFO:root:ConsumerProducer2 Consumer thread finished",
-            "INFO:root:Producer Produced: ['STOP']",
-            "INFO:root:Consumer Consumer thread finished",
+            "DEBUG:root:Producer Produced: ['TEST_CONTENT']",
+            "DEBUG:root:Consumer Consumed: ['TEST_CONTENT']",
+            "DEBUG:root:Producer Produced: ['PING']",
+            "DEBUG:root:ConsumerProducer Consumed: ['PING']",
+            "DEBUG:root:Producer Produced: ['PING', 'FINAL PING']",
+            "DEBUG:root:ConsumerProducer Consumed: ['PING', 'FINAL PING']",
+            "DEBUG:root:ConsumerProducer Produced: ['RETURN_TEST_CONTENT']",
+            "DEBUG:root:ConsumerProducer2 Consumed: ['RETURN_TEST_CONTENT']",
+            "DEBUG:root:ConsumerProducer2 Produced: ['RECEIVED']",
+            "DEBUG:root:ConsumerProducer Consumed: ['RECEIVED']",
+            "DEBUG:root:ConsumerProducer Produced: ['FINISHED']",
+            "DEBUG:root:ConsumerProducer Consumer thread finished",
+            "DEBUG:root:ConsumerProducer2 Consumed: ['FINISHED']",
+            "DEBUG:root:ConsumerProducer2 Consumer thread finished",
+            "DEBUG:root:Producer Produced: ['STOP']",
+            "DEBUG:root:Consumer Consumer thread finished",
         ]
 
         # Check that each expected log message appears at least once

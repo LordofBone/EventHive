@@ -108,20 +108,19 @@ class EventActor(ABC, threading.Thread):
 
     def produce_event(self, event):
         self.event_queue.queue_addition(event)
-        logging.info(f"{self.__class__.__name__} Produced: {event.content}")
+        logging.debug(f"{self.__class__.__name__} Produced: {event.content}")
 
     def run(self):
         event_handlers = self.get_event_handlers()
         continue_loop = True
         while continue_loop:
-            logging.debug(f"{self.__class__.__name__} Consuming...")
             event_data = self.event_queue.get_latest_event(self.get_consumable_events())
             if event_data is not None:
                 _, event = event_data
                 handler = event_handlers.get(event.content[0])
                 if handler:
                     continue_loop = handler(*event.content)
-                    logging.info(f"{self.__class__.__name__} Consumed: {event.content}")
+                    logging.debug(f"{self.__class__.__name__} Consumed: {event.content}")
                 else:
                     logging.warning(f"{self.__class__.__name__} Received unknown event: {event}")
-        logging.info(f"{self.__class__.__name__} Consumer thread finished")
+        logging.debug(f"{self.__class__.__name__} Consumer thread finished")
