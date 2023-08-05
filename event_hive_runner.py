@@ -5,6 +5,9 @@ import threading
 from abc import ABC, abstractmethod
 from enum import Enum
 
+logger = logging.getLogger(__name__)
+logger.debug("Initialized")
+
 
 class EventType(Enum):
     """
@@ -108,7 +111,7 @@ class EventActor(ABC, threading.Thread):
 
     def produce_event(self, event):
         self.event_queue.queue_addition(event)
-        logging.debug(f"{self.__class__.__name__} Produced: {event.content}")
+        logger.debug(f"{self.__class__.__name__} Produced: {event.content}")
 
     def run(self):
         event_handlers = self.get_event_handlers()
@@ -120,7 +123,7 @@ class EventActor(ABC, threading.Thread):
                 handler = event_handlers.get(event.content[0])
                 if handler:
                     continue_loop = handler(*event.content)
-                    logging.debug(f"{self.__class__.__name__} Consumed: {event.content}")
+                    logger.debug(f"{self.__class__.__name__} Consumed: {event.content}")
                 else:
-                    logging.warning(f"{self.__class__.__name__} Received unknown event: {event}")
-        logging.debug(f"{self.__class__.__name__} Consumer thread finished")
+                    logger.warning(f"{self.__class__.__name__} Received unknown event: {event}")
+        logger.debug(f"{self.__class__.__name__} Consumer thread finished")
