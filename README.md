@@ -69,7 +69,7 @@ class Producer(EventActor):
         return []
 
     def run(self):
-        while self.loop_count < self.max_loop:
+        while self.loop_count < self.max_loop and self.is_running:
             if self.loop_count == self.max_loop - 1:
                 event = TestEvent(["STOP"], 3)
             elif self.loop_count == 2:
@@ -139,6 +139,10 @@ consumerproducer = ConsumerProducer(event_queue)
 
 consumerproducer.start()
 ```
+
+You can also call a shutdown on consumers and producers to stop them from running:
+
+```consumerproducer.shutdown()```
 
 ## Testing
 
