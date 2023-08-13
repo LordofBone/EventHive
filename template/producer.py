@@ -24,7 +24,7 @@ class Producer(EventActor):
         This method is called when the thread is started.
         :return:
         """
-        while self.loop_count < self.max_loop:
+        while self.loop_count < self.max_loop and self.is_running:
             logging.debug(f"{self.__class__.__name__} Producing...")
             if self.loop_count == 1:
                 event = OtherTestEvent(["TEST_CONTENT"], 2)

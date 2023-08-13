@@ -63,6 +63,43 @@ class TestMultithreadAccess(unittest.TestCase):
         self.assertEqual(len(self.event_queue.priority_queue), 0)
 
 
+class TestShutdown(unittest.TestCase):
+    """
+    Test the shutdown functionality of the event system
+    """
+
+    def setUp(self):
+        self.event_queue = EventQueue()
+        self.producer = Producer(self.event_queue)
+        self.consumer = Consumer(self.event_queue)
+
+    def test_shutdown_functionality(self):
+        """
+        Test that the threads can be gracefully shut down
+        """
+
+        # Start the threads
+        self.producer.start()
+        self.consumer.start()
+
+        # Let them run for a while
+        time.sleep(5)  # Let them produce and consume events for 5 seconds
+
+        # Shutdown both threads
+        self.producer.shutdown()
+        self.consumer.shutdown()
+
+        # Allow some time for threads to gracefully shut down
+        time.sleep(2)
+
+        # Ensure both threads have stopped
+        self.assertFalse(self.producer.is_alive())
+        self.assertFalse(self.consumer.is_alive())
+
+        # Check that all events have been consumed
+        self.assertEqual(len(self.event_queue.priority_queue), 0)
+
+
 class Producer(EventActor):
     def __init__(self, event_queue):
         super().__init__(event_queue)
@@ -82,7 +119,7 @@ class Producer(EventActor):
         This method is called when the thread is started.
         :return:
         """
-        while self.loop_count < self.max_loop:
+        while self.loop_count < self.max_loop and self.is_running:
             if self.loop_count == self.max_loop - 1:
                 event = VisionDetectEvent(["EXIT"], 1)
             else:
