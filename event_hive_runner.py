@@ -113,10 +113,13 @@ class EventActor(ABC, threading.Thread):
         self.event_queue.queue_addition(event)
         logger.debug(f"{self.__class__.__name__} Produced: {event.content}")
 
+    def shutdown(self):
+        self.is_running = False
+
     def run(self):
         event_handlers = self.get_event_handlers()
         continue_loop = True
-        while continue_loop:
+        while self.is_running and continue_loop:
             event_data = self.event_queue.get_latest_event(self.get_consumable_events())
             if event_data is not None:
                 _, event = event_data
