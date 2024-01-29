@@ -129,4 +129,10 @@ class EventActor(ABC, threading.Thread):
                     logger.debug(f"{self.__class__.__name__} Consumed: {event.content}")
                 else:
                     logger.warning(f"{self.__class__.__name__} Received unknown event: {event}")
-        logger.debug(f"{self.__class__.__name__} Consumer thread finished")
+        if not continue_loop:
+            logger.debug(f"{self.__class__.__name__} continue_loop is False, an event activated function has returned "
+                         f"nothing or 'False'.")
+        if not self.is_running:
+            logger.debug(f"{self.__class__.__name__} self.is_running is False; something has actively shut down the "
+                         f"thread.")
+        logger.debug(f"{self.__class__.__name__} Consumer thread finished.")
