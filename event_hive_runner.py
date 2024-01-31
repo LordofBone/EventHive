@@ -115,6 +115,7 @@ class EventActor(ABC, threading.Thread):
 
     def shutdown(self):
         self.is_running = False
+        logger.debug(f"{self.__class__.__name__} Shutdown called")
 
     def run(self):
         event_handlers = self.get_event_handlers()
