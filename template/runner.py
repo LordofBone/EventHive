@@ -7,12 +7,14 @@ from template.consumer_producer import ConsumerProducer
 from template.consumer_producer_2 import ConsumerProducer2
 from template.producer import Producer
 
+logger = logging.getLogger(__name__)
+
 
 def main():
-    logging.debug("Starting event hive runner")
+    logger.debug("Starting event hive runner")
     event_queue = EventQueue()
 
-    logging.debug("Starting producer and consumer threads")
+    logger.debug("Starting producer and consumer threads")
     producer_process = Producer(event_queue)
     consumer_process = Consumer(event_queue)
     producer_consumer_process = ConsumerProducer(event_queue)
@@ -23,7 +25,7 @@ def main():
     producer_consumer_process.start()
     producer_consumer_process_2.start()
 
-    logging.debug("Waiting for threads to finish")
+    logger.debug("Waiting for threads to finish")
     producer_process.join()
     consumer_process.join()
     producer_consumer_process.join()
