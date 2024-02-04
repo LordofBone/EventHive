@@ -11,14 +11,17 @@ class TestMultithreadAccess(unittest.TestCase):
 
     def setUp(self):
         self.event_queue = EventQueue()
+        self.event_queue_delay = EventQueue(sleep_time=2)
         self.producer = Producer(self.event_queue)
         self.consumer = Consumer(self.event_queue)
 
         self.producer1 = Producer(self.event_queue)
         self.producer2 = Producer(self.event_queue)
+        self.producer3 = Producer(self.event_queue_delay)
 
         self.consumer1 = Consumer(self.event_queue)
         self.consumer2 = Consumer(self.event_queue)
+        self.consumer3 = Consumer(self.event_queue_delay)
 
     def test_multithread_access(self):
         """
@@ -61,6 +64,25 @@ class TestMultithreadAccess(unittest.TestCase):
 
         # Check that all events have been consumed
         self.assertEqual(len(self.event_queue.priority_queue), 0)
+
+    def test_multithread_access_with_delay_queue(self):
+        """
+        Test that the event queue can be accessed by multiple threads
+        :return:
+        """
+        # Start the threads
+        self.producer3.start()
+        self.consumer3.start()
+
+        # Wait for them to finish
+        self.producer3.join()
+        self.consumer3.join()
+
+        # Allow some time for consumer to process all events
+        time.sleep(1)
+
+        # Check that all events have been consumed
+        self.assertEqual(len(self.event_queue_delay.priority_queue), 0)
 
 
 class TestShutdown(unittest.TestCase):
