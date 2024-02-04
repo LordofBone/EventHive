@@ -113,6 +113,7 @@ class EventActor(ABC, threading.Thread):
     def produce_event(self, event):
         self.event_queue.queue_addition(event)
         logger.debug(f"{self.__class__.__name__} Produced: {event.content}")
+        sleep(self.event_queue.sleep_time)
 
     def shutdown(self):
         self.is_running = False
