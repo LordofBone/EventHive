@@ -4,6 +4,7 @@ import queue
 import threading
 from abc import ABC, abstractmethod
 from enum import Enum
+from time import sleep
 
 logger = logging.getLogger(__name__)
 logger.debug("Initialized")
@@ -57,11 +58,12 @@ class MovementEvent(Event):
 
 
 class EventQueue:
-    def __init__(self):
+    def __init__(self, sleep_time=0):
         self.queue_lock = threading.Lock()
         self.priority_queue = list()  # ensure priority_queue is a list
         self.temp_queue = queue.PriorityQueue()
         self.tiebreaker = 0
+        self.sleep_time = sleep_time
 
     def queue_addition(self, event):
         with self.queue_lock:
@@ -89,11 +91,10 @@ class EventQueue:
 
 
 class EventActor(ABC, threading.Thread):
-    def __init__(self, event_queue: EventQueue, sleep_time=0):
+    def __init__(self, event_queue: EventQueue):
         super().__init__()
         self.event_queue = event_queue
         self.is_running = True
-        self.sleep_time = sleep_time
 
     @abstractmethod
     def get_event_handlers(self):
@@ -130,6 +131,7 @@ class EventActor(ABC, threading.Thread):
                     logger.debug(f"{self.__class__.__name__} Consumed: {event.content}")
                 else:
                     logger.warning(f"{self.__class__.__name__} Received unknown event: {event}")
+            sleep(self.event_queue.sleep_time)
         if not continue_loop:
             logger.debug(f"{self.__class__.__name__} continue_loop is False, an event activated function has returned "
                          f"nothing or 'False'.")
